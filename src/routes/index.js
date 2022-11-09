@@ -1,5 +1,6 @@
 import express from "express";
 import authRouter from "./AuthRouter.js";
+import quizRouter from "./QuizRouter.js";
 import userRouter from "./UserRouter.js";
 
 const router = express.Router();
@@ -10,6 +11,7 @@ router.get("/", (req, res) => {
 
 router.use("/auth", authRouter);
 router.use("/users", userRouter);
+router.use("/quiz", quizRouter);
 
 router.get("*", (req, res) => res.status(404).send('<h1>404 Not Found</h1>'));
 
