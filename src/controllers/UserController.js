@@ -1,6 +1,7 @@
 import bcrypt from "bcrypt";
 import jwt from "jsonwebtoken";
-import User from "../models/user.js";
+import JwtHelper from "../helpers/JwtHelper.js";
+import User from "../models/UserModel.js";
 
 const UserController = {
   create: async (req, res) => {
@@ -15,12 +16,15 @@ const UserController = {
       const user = new User({ fullName, email, password: encryptedPassword, role });
       await user.save();
 
-      jwt.sign({ id: user.id }, process.env.JWT_KEY, { expiresIn: "1d" }, (error, token) => {
-        if (error) throw error;
-        res.status(200).json({ user, token });
-      });
+      const userJson = user.toJSON({ useProjection: true });
+
+      const accessToken = JwtHelper.generateJwtToken(userJson, "10m");
+      const refreshToken = JwtHelper.generateJwtToken(userJson, "3d");
+
+      res.cookie("refreshToken", refreshToken, { httpOnly: true, sameSite: 'None', secure: true, maxAge: 24 * 60 * 60 * 1000 });
+      res.status(200).json({ user: userJson, accessToken });
     } catch (error) {
-      res.status(500).json(error);
+      res.status(500).json({ error: JSON.stringify(error) });
     }
   },
   show: async (req, res) => {
@@ -28,24 +32,23 @@ const UserController = {
     if (!id) return res.status(400).json({ error: "ID é obrigatório." })
 
     try {
-      const user = await User.findById(id, { password: 0 });
+      const user = await User.findById(id);
       if (!user) return res.status(404).json(user);
 
       return res.status(200).json(user);
     } catch (error) {
-      res.status(500).json(error);
+      res.status(500).json({ error: JSON.stringify(error) });
     }
   },
   update: async (req, res) => {
     const { id } = req.params;
-    if (!id) return res.status(400).json({ error: "ID é obrigatório." })
+    if (!id) return res.status(400).json({ error: "ID é obrigatório." });
 
     try {
-      const user = await User.findByIdAndUpdate(id, { $set: req.body }, { lean: true, new: true, projection: { password: 0 } });
+      const user = await User.findByIdAndUpdate(id, { $set: req.body }, { lean: true, new: true });
       res.status(200).json(user);
     } catch (error) {
-      console.log(error)
-      res.status(500).json(error);
+      res.status(500).json({ error: JSON.stringify(error) });
     }
   }
 };
