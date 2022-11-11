@@ -14,8 +14,8 @@ mongoose.connect(DB_URL, { useNewUrlParser: true, useUnifiedTopology: true })
 
     const app = express();
     app.use(express.json());
-    app.use(cors());
     app.use(cookieParser());
+    app.use(cors({ credentials: true, origin: "http://localhost:3000" }));
 
     app.use("/", indexRouter);
 

@@ -19,7 +19,7 @@ const AuthController = {
       const accessToken = JwtHelper.generateJwtToken(userJson, "10m");
       const refreshToken = JwtHelper.generateJwtToken(userJson, "3d");
 
-      res.cookie("refreshToken", refreshToken, { httpOnly: true, sameSite: 'None', secure: true, maxAge: 24 * 60 * 60 * 1000 });
+      res.cookie("refreshToken", refreshToken, { httpOnly: false, sameSite: 'None', secure: false, maxAge: 24 * 60 * 60 * 1000 });
       res.status(200).json({ user: userJson, accessToken });
     } catch (error) {
       res.status(500).json({ error: JSON.stringify(error) });
