@@ -12,6 +12,10 @@ const QuestionSchema = new mongoose.Schema({
   correctAnswerIndex: {
     type: Number,
     required: true
+  },
+  imagePath: {
+    type: String,
+    required: false
   }
 }, { timestamps: false, versionKey: false, _id: false });
 

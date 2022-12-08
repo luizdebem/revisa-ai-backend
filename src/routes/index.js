@@ -15,6 +15,8 @@ router.use("/users", userRouter);
 router.use("/quiz", quizRouter);
 router.use("/answer", answerRouter);
 
+router.use('/public', express.static('public'))
+
 router.get("*", (req, res) => res.status(404).send('<h1>404 Not Found</h1>'));
 
 export default router;

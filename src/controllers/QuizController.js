@@ -38,6 +38,10 @@ const QuizController = {
     } catch (error) {
       res.status(500).json({ error: JSON.stringify(error) });
     }
+  },
+  uploadFile: async (req, res) => {
+    console.log(req.file);
+    return res.status(200).json({ path: req.file.path });
   }
 };
 
