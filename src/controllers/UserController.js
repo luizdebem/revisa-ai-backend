@@ -18,7 +18,7 @@ const UserController = {
 
       const userJson = user.toJSON({ useProjection: true });
 
-      const accessToken = JwtHelper.generateJwtToken(userJson, "10m");
+      const accessToken = JwtHelper.generateJwtToken(userJson, "40m");
       const refreshToken = JwtHelper.generateJwtToken(userJson, "3d");
 
       res.cookie("refreshToken", refreshToken, { httpOnly: false, sameSite: 'None', secure: false, maxAge: 24 * 60 * 60 * 1000 });

@@ -32,8 +32,9 @@ const QuizController = {
   listByPassword: async (req, res) => {
     const { password } = req.params;
     try {
-      const quiz = await Quiz.findOne({ password }, { "questions.correctAnswerIndex": 0 });
-      return res.status(200).json(quiz);
+      const quiz = await Quiz.find({ password }, { "questions.correctAnswerIndex": 0 });
+      if (quiz.length) return res.status(200).json(quiz);
+      return res.status(404).json({ error: "Not found." });
     } catch (error) {
       res.status(500).json({ error: JSON.stringify(error) });
     }

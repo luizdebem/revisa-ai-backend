@@ -17,6 +17,15 @@ const AnswerController = {
     } catch (error) {
       return res.status(500).json({ error: JSON.stringify(error) });
     }
+  },
+  findByStudentId: async (req, res) => {
+    const { studentId } = req.params;
+    try {
+      const answers = await Answer.find({ studentId });
+      return res.status(200).json([...answers]);
+    } catch (error) {
+      return res.status(500).json({ error: JSON.stringify(error) });
+    }
   }
 };
 
@@ -27,10 +36,10 @@ function calculateScoreAndPrize(quiz, answers) {
     if (answers[i] === quiz.questions[i].correctAnswerIndex) totalRightAnswers++;
   }
 
-  const studentSuccessRatio = totalRightAnswers / quiz.questions.length;
+  const studentSuccessRatio = (totalRightAnswers / quiz.questions.length);
 
-  const score = (studentSuccessRatio * 10);
-  const prizeEarned = studentSuccessRatio * quiz.totalPrize;
+  const score = parseFloat((studentSuccessRatio * 10).toFixed(1));
+  const prizeEarned = parseFloat((studentSuccessRatio * quiz.totalPrize).toFixed(2));
 
   return { score, prizeEarned };
 }
